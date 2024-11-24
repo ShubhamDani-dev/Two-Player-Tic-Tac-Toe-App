@@ -22,37 +22,20 @@ public class GameFragment extends Fragment {
   private static final int GRID_SIZE = 9;
 
   private final Button[] mButtons = new Button[GRID_SIZE];
+  private final String[] board = new String[GRID_SIZE];
+  private boolean isPlayerTurn = true; // Player goes first
+  private boolean isGameOver = false;
   private NavController mNavController;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setHasOptionsMenu(true); // Needed to display the action menu for this fragment
+    setHasOptionsMenu(true);
 
-    // Extract the argument passed with the action in a type-safe way
+    // Extract game type
     GameFragmentArgs args = GameFragmentArgs.fromBundle(getArguments());
-    Log.d(TAG, "New game type = " + args.getGameType());
-
-    // Handle the back press by adding a confirmation dialog
-    OnBackPressedCallback callback = new OnBackPressedCallback(true) {
-      @Override
-      public void handleOnBackPressed() {
-        Log.d(TAG, "Back pressed");
-
-        // TODO show dialog only when the game is still in progress
-        AlertDialog dialog = new AlertDialog.Builder(requireActivity())
-            .setTitle(R.string.confirm)
-            .setMessage(R.string.forfeit_game_dialog_message)
-            .setPositiveButton(R.string.yes, (d, which) -> {
-              // TODO update loss count
-              mNavController.popBackStack();
-            })
-            .setNegativeButton(R.string.cancel, (d, which) -> d.dismiss())
-            .create();
-        dialog.show();
-      }
-    };
-    requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+    String gameType = args.getGameType();
+    Log.d(TAG, "Game type = " + gameType);
   }
 
   @Override
@@ -65,34 +48,113 @@ public class GameFragment extends Fragment {
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-
     mNavController = Navigation.findNavController(view);
 
-    mButtons[0] = view.findViewById(R.id.button0);
-    mButtons[1] = view.findViewById(R.id.button1);
-    mButtons[2] = view.findViewById(R.id.button2);
+    initializeButtons(view);
+  }
 
-    mButtons[3] = view.findViewById(R.id.button3);
-    mButtons[4] = view.findViewById(R.id.button4);
-    mButtons[5] = view.findViewById(R.id.button5);
-
-    mButtons[6] = view.findViewById(R.id.button6);
-    mButtons[7] = view.findViewById(R.id.button7);
-    mButtons[8] = view.findViewById(R.id.button8);
-
-    for (int i = 0; i < mButtons.length; i++) {
+  private void initializeButtons(View view) {
+    for (int i = 0; i < GRID_SIZE; i++) {
+      mButtons[i] = view.findViewById(getResources().getIdentifier("button" + i, "id", requireActivity().getPackageName()));
       int finalI = i;
-      mButtons[i].setOnClickListener(v -> {
-        Log.d(TAG, "Button " + finalI + " clicked");
-        // TODO implement listeners
-      });
+      mButtons[i].setOnClickListener(v -> handlePlayerMove(finalI));
     }
   }
 
-  @Override
-  public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-    super.onCreateOptionsMenu(menu, inflater);
-    inflater.inflate(R.menu.menu_logout, menu);
-    // this action menu is handled in MainActivity
+  private void handlePlayerMove(int index) {
+    if (!isPlayerTurn || isGameOver || board[index] != null) {
+      return;
+    }
+
+    // Player makes a move
+    board[index] = "X";
+    mButtons[index].setText("X");
+    isPlayerTurn = false;
+
+    // Check if the player won or the game is a draw
+    if (checkGameOutcome()) return;
+
+    // Bot makes a move
+    handleBotMove();
+  }
+
+  private void handleBotMove() {
+    if (isGameOver) return;
+
+    // Find a random empty cell
+    int botMove = findRandomEmptyCell();
+    if (botMove != -1) {
+      board[botMove] = "O";
+      mButtons[botMove].setText("O");
+    }
+
+    // Check if the bot won or the game is a draw
+    if (checkGameOutcome()) return;
+
+    // Return control to the player
+    isPlayerTurn = true;
+  }
+
+  private int findRandomEmptyCell() {
+    for (int i = 0; i < GRID_SIZE; i++) {
+      if (board[i] == null) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  private boolean checkGameOutcome() {
+    // Check rows, columns, diagonals for a win
+    if (checkWin("X")) {
+      showGameOverDialog(getString(R.string.player_wins));
+      return true;
+    } else if (checkWin("O")) {
+      showGameOverDialog(getString(R.string.bot_wins));
+      return true;
+    }
+
+    // Check for a draw
+    if (isBoardFull()) {
+      showGameOverDialog(getString(R.string.game_draw));
+      return true;
+    }
+
+    return false;
+  }
+
+  private boolean checkWin(String player) {
+    int[][] winConditions = {
+            {0, 1, 2}, {3, 4, 5}, {6, 7, 8}, // Rows
+            {0, 3, 6}, {1, 4, 7}, {2, 5, 8}, // Columns
+            {0, 4, 8}, {2, 4, 6}             // Diagonals
+    };
+
+    for (int[] condition : winConditions) {
+      if (player.equals(board[condition[0]]) &&
+              player.equals(board[condition[1]]) &&
+              player.equals(board[condition[2]])) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private boolean isBoardFull() {
+    for (String cell : board) {
+      if (cell == null) return false;
+    }
+    return true;
+  }
+
+  private void showGameOverDialog(String message) {
+    isGameOver = true;
+    new AlertDialog.Builder(requireActivity())
+            .setTitle(R.string.game_over)
+            .setMessage(message)
+            .setPositiveButton(R.string.ok, (dialog, which) -> mNavController.popBackStack())
+            .setCancelable(false)
+            .create()
+            .show();
   }
 }

@@ -24,4 +24,9 @@
   <string name="yes">Yes</string>
   <string name="cancel">Cancel</string>
   <string name="confirm">Confirm</string>
+    <string name="player_wins">You Win!</string>
+  <string name="bot_wins">You Lose!</string>
+  <string name="game_draw">It\'s a Draw</string>
+  <string name="game_over">Game Over</string>
+  <string name="ok">Ok</string>
 </resources>
