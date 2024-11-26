@@ -39,4 +39,6 @@
   <string name="no">No</string>
     <string name="opponent_wins">Opponent Wins</string>
     <string name="waiting_for_opponent">Waiting For Opponent\n</string>
+  <string name="confirm_forfeit">Confirm Forfeit</string>
+  <string name="forfeit">Forfeit!</string>
 </resources>
