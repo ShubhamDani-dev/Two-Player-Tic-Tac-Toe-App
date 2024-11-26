@@ -18,6 +18,19 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent" />
 
+  <!-- TextView to show that player is waiting for opponent -->
+  <TextView
+      android:id="@+id/text_waiting_for_opponent"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/waiting_for_opponent"
+      android:visibility="gone"
+      android:textSize="16sp"
+      android:layout_marginTop="20dp"
+      android:textColor="@android:color/black"
+      tools:ignore="MissingConstraints" />
+
+
   <Button
       android:id="@+id/button0"
       android:layout_width="wrap_content"
