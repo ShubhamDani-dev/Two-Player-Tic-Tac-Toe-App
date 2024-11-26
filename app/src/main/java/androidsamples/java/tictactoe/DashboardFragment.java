@@ -9,6 +9,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -53,32 +55,48 @@ public class DashboardFragment extends Fragment {
 
     // Show a dialog when the user clicks the "new game" button
     view.findViewById(R.id.fab_new_game).setOnClickListener(v -> {
+      AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+      builder.setTitle(R.string.new_game)
+              .setMessage(R.string.new_game_dialog_message);
 
-      // A listener for the positive and negative buttons of the dialog
-      DialogInterface.OnClickListener listener = (dialog, which) -> {
-        String gameType = "No type";
-        if (which == DialogInterface.BUTTON_POSITIVE) {
-          gameType = getString(R.string.two_player);
-        } else if (which == DialogInterface.BUTTON_NEGATIVE) {
-          gameType = getString(R.string.one_player);
-        }
+      // Listener for single-player mode
+      DialogInterface.OnClickListener singlePlayerListener = (dialog, which) -> {
+        String gameType = getString(R.string.one_player);
         Log.d(TAG, "New Game: " + gameType);
-
-        // Passing the game type as a parameter to the action
-        // extract it in GameFragment in a type safe way
-        NavDirections action = DashboardFragmentDirections.actionGame(gameType);
+        NavDirections action = DashboardFragmentDirections.actionGame(gameType, null);
         mNavController.navigate(action);
       };
 
-      // create the dialog
-      AlertDialog dialog = new AlertDialog.Builder(requireActivity())
-          .setTitle(R.string.new_game)
-          .setMessage(R.string.new_game_dialog_message)
-          .setPositiveButton(R.string.two_player, listener)
-          .setNegativeButton(R.string.one_player, listener)
-          .setNeutralButton(R.string.cancel, (d, which) -> d.dismiss())
-          .create();
-      dialog.show();
+      // Listener for two-player mode
+      DialogInterface.OnClickListener twoPlayerListener = (dialog, which) -> {
+        AlertDialog.Builder idDialog = new AlertDialog.Builder(requireActivity());
+        idDialog.setTitle(R.string.enter_game_id);
+
+        View inputView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_game_id, null);
+        idDialog.setView(inputView);
+
+        idDialog.setPositiveButton(R.string.start_game, (idDialogInterface, idWhich) -> {
+          String gameId = ((EditText) inputView.findViewById(R.id.edit_game_id)).getText().toString();
+          if (!gameId.isEmpty()) {
+            Log.d(TAG, "Starting Two Player Game with ID: " + gameId);
+
+            String gameType = getString(R.string.two_player);
+            NavDirections action = DashboardFragmentDirections.actionGame(gameType, gameId);
+            mNavController.navigate(action);
+          } else {
+            Toast.makeText(requireContext(), R.string.enter_valid_game_id, Toast.LENGTH_SHORT).show();
+          }
+        });
+
+        idDialog.setNegativeButton(R.string.cancel, (idDialogInterface, idWhich) -> idDialogInterface.dismiss());
+        idDialog.create().show();
+      };
+
+      builder.setPositiveButton(R.string.two_player, twoPlayerListener)
+              .setNegativeButton(R.string.one_player, singlePlayerListener)
+              .setNeutralButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
+
+      builder.create().show();
     });
   }
 

@@ -29,4 +29,13 @@
   <string name="game_draw">It\'s a Draw</string>
   <string name="game_over">Game Over</string>
   <string name="ok">Ok</string>
+  <string name="enter_game_id">Enter Game ID</string>
+  <string name="game_id_hint">Game ID</string>
+  <string name="enter_valid_game_id">Please enter a valid game ID</string>
+  <string name="game_id_display">Game ID: %1$s</string>
+  <string name="start_game">Start Game</string>
+  <string name="confirm_exit">Exit</string>
+  <string name="forfeit_message">Forfeit</string>
+  <string name="no">No</string>
+    <string name="opponent_wins">Opponent Wins</string>
 </resources>

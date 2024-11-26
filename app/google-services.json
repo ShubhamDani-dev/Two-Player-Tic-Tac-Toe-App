@@ -2,7 +2,8 @@
   "project_info": {
     "project_number": "2094561725",
     "project_id": "sdpd-tictactoe",
-    "storage_bucket": "sdpd-tictactoe.firebasestorage.app"
+    "storage_bucket": "sdpd-tictactoe.firebasestorage.app",
+    "firebase_url": "https://sdpd-tictactoe-default-rtdb.asia-southeast1.firebasedatabase.app"
   },
   "client": [
     {

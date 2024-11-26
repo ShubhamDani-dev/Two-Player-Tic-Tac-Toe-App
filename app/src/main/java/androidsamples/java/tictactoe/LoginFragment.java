@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavDirections;
@@ -23,15 +24,16 @@ public class LoginFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         if (mAuth.getCurrentUser() != null) {
-            try {
-                Log.d(TAG, "User already logged in, navigating to Dashboard");
-                NavDirections action = LoginFragmentDirections.actionLoginSuccessful();
-                Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).navigate(action);
-            } catch (Exception e) {
-                Log.e(TAG, "Navigation failed", e);
-            }
+            Log.d(TAG, "User already logged in, navigating to Dashboard");
+            NavDirections action = LoginFragmentDirections.actionLoginSuccessful();
+            Navigation.findNavController(view).navigate(action);
         }
     }
 

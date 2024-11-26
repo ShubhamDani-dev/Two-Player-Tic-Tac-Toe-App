@@ -50,5 +50,9 @@
         <argument
             android:name="gameType"
             app:argType="string" />
+        <argument
+            android:name="gameId"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 </navigation>
