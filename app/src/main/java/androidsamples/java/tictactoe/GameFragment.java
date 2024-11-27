@@ -34,7 +34,7 @@ public class GameFragment extends Fragment {
   private static final int GRID_SIZE = 9;
 
   private final Button[] mButtons = new Button[GRID_SIZE];
-  private final String[] board = new String[GRID_SIZE];
+  String[] board = new String[GRID_SIZE];
   private boolean isPlayerTurn = true;
   private boolean isGameOver = false;
   private boolean isTwoPlayerMode = false;
@@ -167,7 +167,7 @@ public class GameFragment extends Fragment {
     }
   }
 
-  private void performMove(int index, String symbol) {
+  void performMove(int index, String symbol) {
     updateBoard(index, symbol);
     if (isTwoPlayerMode) {
       updateGameStateInFirebase(index, symbol);
@@ -230,7 +230,7 @@ public class GameFragment extends Fragment {
     }
   }
 
-  private boolean checkWin(String player) {
+  boolean checkWin(String player) {
     int[][] winConditions = {
             {0, 1, 2}, {3, 4, 5}, {6, 7, 8}, // Rows
             {0, 3, 6}, {1, 4, 7}, {2, 5, 8}, // Columns
@@ -247,7 +247,7 @@ public class GameFragment extends Fragment {
     return false;
   }
 
-  private boolean isBoardFull() {
+  boolean isBoardFull() {
     for (String cell : board) {
       if (cell == null) {
         return false; // At least one empty cell
