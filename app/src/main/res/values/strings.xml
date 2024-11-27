@@ -41,4 +41,5 @@
     <string name="waiting_for_opponent">Waiting For Opponent\n</string>
   <string name="confirm_forfeit">Confirm Forfeit</string>
   <string name="forfeit">Forfeit!</string>
+  <string name="score_format">Wins: %1$d | Losses: %2$d | Draws: %3$d</string>
 </resources>

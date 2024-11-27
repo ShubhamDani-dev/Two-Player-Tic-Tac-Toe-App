@@ -2,6 +2,8 @@ package androidsamples.java.tictactoe;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -150,9 +152,11 @@ public class GameFragment extends Fragment {
 
     // Check if the player wins after their move
     if (checkWin(playerSymbol)) {
+      updateStats(1,0,0);
       showGameOverDialog(getString(R.string.player_wins));
       isGameOver = true;
     } else if (isBoardFull()) {
+      updateStats(0,0,1);
       showGameOverDialog(getString(R.string.game_draw));
       isGameOver = true;
     } else {
@@ -187,9 +191,11 @@ public class GameFragment extends Fragment {
 
     // Check game outcome after AI move
     if (checkWin(opponentSymbol)) {
+      updateStats(0, 1, 0);
       showGameOverDialog(getString(R.string.opponent_wins));
       isGameOver = true;
     } else if (isBoardFull()) {
+      updateStats(0, 0, 1);
       showGameOverDialog(getString(R.string.game_draw));
       isGameOver = true;
     }
@@ -320,12 +326,41 @@ public class GameFragment extends Fragment {
 
   private void handleGameCompletion(String winner) {
     if (winner == null) {
+      // Draw
+      updateStats(0, 0, 1);
       showGameOverDialog(getString(R.string.game_draw));
     } else if (winner.equals(playerSymbol)) {
+      // Player wins
+      updateStats(1, 0, 0); // Increment wins
       showGameOverDialog(getString(R.string.player_wins));
     } else {
+      // Opponent wins
+      updateStats(0, 1, 0); // Increment losses
       showGameOverDialog(getString(R.string.opponent_wins));
     }
+  }
+
+  private void updateStats(int winIncrement, int lossIncrement, int drawIncrement) {
+    SharedPreferences prefs = requireContext().getSharedPreferences("GameStats", Context.MODE_PRIVATE);
+    SharedPreferences.Editor editor = prefs.edit();
+
+    // Fetch existing stats
+    int currentWins = prefs.getInt("wins", 0);
+    int currentLosses = prefs.getInt("losses", 0);
+    int currentDraws = prefs.getInt("draws", 0);
+
+    // Update stats
+    editor.putInt("wins", currentWins + winIncrement);
+    editor.putInt("losses", currentLosses + lossIncrement);
+    editor.putInt("draws", currentDraws + drawIncrement);
+
+    // Commit changes
+    editor.apply();
+
+    // Log updated stats
+    Log.d(TAG, "Updated stats - Wins: " + (currentWins + winIncrement) +
+            ", Losses: " + (currentLosses + lossIncrement) +
+            ", Draws: " + (currentDraws + drawIncrement));
   }
 
   /* ----------------- Navigation and Dialogs ----------------- */
@@ -357,7 +392,9 @@ public class GameFragment extends Fragment {
   private void showGameOverDialog(String message) {
     new AlertDialog.Builder(requireContext())
             .setMessage(message)
-            .setPositiveButton(R.string.ok, (dialog, which) -> navigateToDashboard())
+            .setPositiveButton(R.string.ok, (dialog, which) -> {
+              navigateToDashboard();
+            })
             .show();
   }
 
