@@ -78,6 +78,11 @@ The app integrates Firebase for user authentication and real-time game updates. 
 
 ---
 
+## Peer Programming rating
+- 5/5.
+
+---
+
 ## Estimated Time Spent
 - *Time Taken:* 75 hours.
 
