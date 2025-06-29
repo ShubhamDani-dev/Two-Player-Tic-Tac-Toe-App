@@ -1,14 +1,14 @@
 {
   "project_info": {
-    "project_number": "2094561725",
-    "project_id": "sdpd-tictactoe",
-    "storage_bucket": "sdpd-tictactoe.firebasestorage.app",
-    "firebase_url": "https://sdpd-tictactoe-default-rtdb.asia-southeast1.firebasedatabase.app"
+    "project_number": "YOUR_PROJECT_NUMBER",
+    "project_id": "YOUR_PROJECT_ID",
+    "storage_bucket": "YOUR_PROJECT_ID.firebasestorage.app",
+    "firebase_url": "https://YOUR_PROJECT_ID-default-rtdb.REGION.firebasedatabase.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:2094561725:android:ab7b3acc3e3867f34e7ad4",
+        "mobilesdk_app_id": "YOUR_MOBILE_SDK_APP_ID",
         "android_client_info": {
           "package_name": "androidsamples.java.tictactoe"
         }
@@ -16,7 +16,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDDeqKyarlgka-QEwwtyjAaSJ7lZraQoy4"
+          "current_key": "YOUR_API_KEY_HERE"
         }
       ],
       "services": {
